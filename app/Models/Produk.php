@@ -12,7 +12,7 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'produk'; // Nama tabel eksplisit
+    protected $table = 'produks'; // Nama tabel eksplisit
 
     protected $guarded = [];
 
@@ -20,7 +20,7 @@ class Produk extends Model
     {
         // query kode perusahaan
         $sql = "SELECT IFNULL(MAX(kode_produk), 'AB000') as kode_produk 
-                FROM produk ";
+                FROM produks ";
         $kodeproduk = DB::select($sql);
 
         // cacah hasilnya

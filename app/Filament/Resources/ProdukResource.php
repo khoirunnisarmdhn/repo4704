@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\Barang2Resource\Pages;
-use App\Filament\Resources\Barang2Resource\RelationManagers;
+use App\Filament\Resources\ProdukResource\Pages;
+use App\Filament\Resources\ProdukResource\RelationManagers;
 use App\Models\Produk;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -41,6 +41,10 @@ class ProdukResource extends Resource
                     ->required()
                     ->placeholder('Masukkan nama produk') // Placeholder untuk membantu pengguna
                 ,
+                TextInput::make('jenis_produk')
+                    ->required()
+                    ->placeholder('Masukkan jenis produk')
+                ,
                 TextInput::make('harga_produk')
                     ->required()
                     ->minValue(0) // Nilai minimal 0 (opsional jika tidak ingin ada harga negatif)
@@ -49,9 +53,9 @@ class ProdukResource extends Resource
                     ->placeholder('Masukkan harga produk') // Placeholder untuk membantu pengguna
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set) => 
-                        $set('harga_produk', number_format((int) str_replace('.', '', $state), 0, ',', '.'))
-                      )
-               ,
+                    $set('harga_produk', number_format((int) str_replace(['.', ','], '', $state), 0, ',', '.'))
+                )
+                    ->dehydrateStateUsing(fn ($state) => (int) str_replace(['.', ','], '', $state)),
             ]);
     }
 
@@ -63,6 +67,9 @@ class ProdukResource extends Resource
                     ->searchable(),
                 // agar bisa di search
                 TextColumn::make('nama_produk')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('jenis_produk')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('harga_produk')
