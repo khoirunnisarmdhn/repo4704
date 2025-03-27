@@ -67,4 +67,7 @@ Route::get('/contoh1', [App\Http\Controllers\Contoh1Controller::class, 'show']);
 Route::get('/contoh2', [App\Http\Controllers\Contoh2Controller::class, 'show']);
 Route::get('/pegawai', [App\Http\Controllers\PegawaiController::class, 'index']);
 
+Route::get('/produk', [App\Http\Controllers\ProdukController::class, 'index']);
+
+
 

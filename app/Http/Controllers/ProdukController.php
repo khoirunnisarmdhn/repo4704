@@ -13,7 +13,12 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        //
+{
+    return [
+        'index' => Pages\ListProduks::route('/'),
+    ];
+}
+
     }
 
     /**
@@ -64,3 +69,7 @@ class ProdukController extends Controller
         //
     }
 }
+
+$request->validate([
+    'harga_produk' => 'required|integer|min:0',
+]);
