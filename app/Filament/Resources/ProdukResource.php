@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\Barang2Resource\Pages;
-use App\Filament\Resources\Barang2Resource\RelationManagers;
+use App\Filament\Resources\ProdukResource\Pages;
+use App\Filament\Resources\ProdukResource\RelationManagers;
 use App\Models\Produk;
 use Filament\Forms;
 use Filament\Forms\Form;

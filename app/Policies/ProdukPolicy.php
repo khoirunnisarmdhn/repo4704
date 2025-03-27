@@ -12,9 +12,10 @@ class ProdukPolicy
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
-    {
-        //
-    }
+{
+    return true; // atau return false sesuai kebutuhan
+}
+
 
     /**
      * Determine whether the user can view the model.
