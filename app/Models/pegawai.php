@@ -14,6 +14,8 @@ class Pegawai extends Model
     public $incrementing = false; // Karena id_pegawai bertipe VARCHAR (bukan auto-increment)
     protected $keyType = 'string'; // Karena id_pegawai bertipe varchar
 
+    protected static ?string $navigationGroup = 'Masterdata';
+
     // Tambahkan ini
     protected $fillable = [
         'id_pegawai',
