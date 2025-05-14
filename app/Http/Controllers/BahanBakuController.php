@@ -2,30 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Coa;
-use App\Http\Requests\StoreCoaRequest;
-use App\Http\Requests\UpdateCoaRequest;
+use App\Models\BahanBaku;
+use App\Http\Requests\StoreBahanBakuRequest;
+use App\Http\Requests\UpdateBahanBakuRequest;
 
-class CoaController extends Controller
+class BahanBakuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $coa = Coa::all();
-        return view('coa/view',
-
-
-
-
-        +
-                        [ 
-                            'coa'=>$coa,
-                            'title'=>'contoh m2',
-                            'nama'=>'Aurora Shintya Pasya'
-                        ]
-                    ); 
+        //
     }
 
     /**
@@ -39,16 +27,15 @@ class CoaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCoaRequest $request)
+    public function store(StoreBahanBakuRequest $request)
     {
-        
         //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Coa $coa)
+    public function show(BahanBaku $bahanBaku)
     {
         //
     }
@@ -56,7 +43,7 @@ class CoaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Coa $coa)
+    public function edit(BahanBaku $bahanBaku)
     {
         //
     }
@@ -64,7 +51,7 @@ class CoaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCoaRequest $request, Coa $coa)
+    public function update(UpdateBahanBakuRequest $request, BahanBaku $bahanBaku)
     {
         //
     }
@@ -72,7 +59,7 @@ class CoaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Coa $coa)
+    public function destroy(BahanBaku $bahanBaku)
     {
         //
     }

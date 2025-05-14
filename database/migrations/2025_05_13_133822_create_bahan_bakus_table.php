@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('coa', function (Blueprint $table) {
-            $table ->string('kode_akun')->unique();
-            $table ->string('nama_akun')->unique();
-            $table ->string('header_akun');
+        Schema::create('bahan_baku', function (Blueprint $table) {
+            $table->string('Kode_bahanbaku');
+            $table->string('Nama_bahanbaku');
+            $table->string('Satuan');
+            $table->string('Stok');
+            $table->string('Harga_perunit');
+            $table->string('Kode_supplier');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('coa');
+        Schema::dropIfExists('bahan_baku');
     }
 };

@@ -43,4 +43,4 @@ Route::get('/contoh1', [App\Http\Controllers\Contoh1Controller::class, 'show']);
 
 Route::get('/contoh2', [App\Http\Controllers\Contoh2Controller::class, 'show']);
 Route::get('/coa', [App\Http\Controllers\CoaController::class, 'index']);
-
+Route::get('/bahanbaku', [App\Http\Controllers\BahanBakuController::class, 'index']);
