@@ -45,6 +45,7 @@ Route::get('/contoh1', [App\Http\Controllers\Contoh1Controller::class, 'show']);
 
 Route::get('/contoh2', [App\Http\Controllers\Contoh2Controller::class, 'show']);
 Route::get('/coa', [App\Http\Controllers\CoaController::class, 'index']);
+Route::get('/supplier', [App\Http\Controllers\supplierController::class, 'index']);
 
 // login customer
 Route::get('/depan', [App\Http\Controllers\KeranjangController::class, 'daftarbarang'])
