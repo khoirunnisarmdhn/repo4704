@@ -9,7 +9,7 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    protected $table = 'Supplier'; // Sesuaikan dengan nama tabel
+    protected $table = 'Suppliers'; // Sesuaikan dengan nama tabel
     protected $primaryKey = 'Kode_supplier'; // Sesuaikan dengan primary key yang ada
     public $incrementing = false; // Karena id_pegawai bertipe VARCHAR (bukan auto-increment)
     protected $keyType = 'string'; // Karena id_pegawai bertipe varchar
@@ -21,6 +21,6 @@ class Supplier extends Model
         'Alamat_supplier',
         'Barang',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }
