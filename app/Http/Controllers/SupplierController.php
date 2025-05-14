@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Supplier;
+use App\Models\supplier;
 use App\Http\Requests\StoresupplierRequest;
 use App\Http\Requests\UpdatesupplierRequest;
 
-class SupplierController extends Controller
+class supplierController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $pegawai = Pegawai::all();
-        return view('Supplier/view',
+        $pegawai = supplier::all();
+        return view('supplier/view',
                         [ 
-                            'Supplier'=>$Supplier,
+                            'supplier'=>$supplier,
                             'title'=>'contoh m2',
                             'nama'=>'Putri Valina'
                         ]
@@ -43,7 +43,7 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Supplier $Supplier)
+    public function show(supplier $supplier)
     {
         //
     }
@@ -51,7 +51,7 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supplier $Supplier)
+    public function edit(supplier $supplier)
     {
         //
     }
@@ -59,7 +59,7 @@ class SupplierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatesupplierRequest $request, Supplier $Supplier)
+    public function update(UpdatesupplierRequest $request, supplier $supplier)
     {
         //
     }
@@ -67,7 +67,7 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Supplier $Supplier)
+    public function destroy(supplier $supplier)
     {
         //
     }
