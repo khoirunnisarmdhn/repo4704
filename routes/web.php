@@ -45,6 +45,9 @@ Route::get('/contoh1', [App\Http\Controllers\Contoh1Controller::class, 'show']);
 
 Route::get('/contoh2', [App\Http\Controllers\Contoh2Controller::class, 'show']);
 Route::get('/coa', [App\Http\Controllers\CoaController::class, 'index']);
+<<<<<<< HEAD
+Route::get('/bahanbaku', [App\Http\Controllers\BahanBakuController::class, 'index']);
+=======
 Route::get('/supplier', [App\Http\Controllers\supplierController::class, 'index']);
 
 // login customer
@@ -80,3 +83,4 @@ Route::post('/prosesubahpassword', [App\Http\Controllers\AuthController::class, 
 use App\Http\Controllers\PerusahaanController;
 Route::resource('perusahaan', PerusahaanController::class);
 Route::get('/perusahaan/destroy/{id}', [PerusahaanController::class,'destroy']);
+>>>>>>> d62471e15eec7ea7abcc7bea4bc985886893673b

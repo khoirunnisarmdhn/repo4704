@@ -24,7 +24,6 @@
 						<th>Kode Akun</th>
                         <th>Nama Akun</th>
                         <th>Header Akun</th>
-                        <th>Kode Produk</th>
 						<th>Dibuat</th>
 						<th>Diedit</th>
 
@@ -36,7 +35,6 @@
 							<td>{{ $p->kode_akun}}</td>
                             <td>{{ $p->nama_akun }}</td>
                             <td>{{ $p->header_akun }}</td>
-                            <td>{{ $p->kode_produk }}</td>
 							<td>{{ $p->created_at }}</td>
 							<td>{{ $p->updated_at }}</td>
                         </tr>
