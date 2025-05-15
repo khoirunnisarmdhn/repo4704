@@ -44,7 +44,6 @@ class PenjualanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
-    // merubah nama label menjadi Pelanggan
     protected static ?string $navigationLabel = 'Penjualan';
 
     // tambahan buat grup transaksi
