@@ -45,4 +45,9 @@ class Penjualan extends Model
     {
         return $this->hasMany(DetailPenjualan::class, 'id_penjualan');
     }
+
+    public function statusPemesanan()
+    {
+        return $this->hasOne(StatusPemesanan::class, 'id_penjualan');
+    }
 }
