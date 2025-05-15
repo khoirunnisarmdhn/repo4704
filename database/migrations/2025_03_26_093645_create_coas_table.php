@@ -15,7 +15,6 @@ return new class extends Migration
             $table ->string('kode_akun')->unique();
             $table ->string('nama_akun')->unique();
             $table ->string('header_akun');
-            $table ->string('kode_produk');
             $table->timestamps();
         });
     }

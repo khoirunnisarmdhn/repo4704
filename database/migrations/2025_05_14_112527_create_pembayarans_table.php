@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pegawai', function (Blueprint $table) {
-            $table->string('id_pegawai')->primary();
-            $table->string('nama_pegawai');
-            $table->string('alamat_pegawai');
-            $table->string('no_telpon_pegawai');
+        Schema::create('pembayaran', function (Blueprint $table) {
+            $table->string('id_pembayaran');
+            $table->string('id_penjualan');
+            $table->date('tgl_pembayaran');
+            $table->integer('jumlah_bayar');
+            $table->string('metode_pembayaran');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pegawai');
+        Schema::dropIfExists('pembayaran');
     }
 };

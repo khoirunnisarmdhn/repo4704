@@ -41,11 +41,7 @@ class CoaResource extends Resource
                 ->required()
                 ->placeholder('Masukkan header akun')
             ,
-            TextInput::make('kode_produk')
-                ->required()
-                ->placeholder('Masukkan kode produk')
-                ,
-                
+            
             ]);
     }
 
@@ -65,10 +61,7 @@ class CoaResource extends Resource
                 ->label('Header Akun')
                 ->sortable()
                 ->searchable(),
-                TextColumn::make('kode_produk')
-                ->label('Kode Produk')
-                ->sortable()
-                ->searchable(),
+
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('kode_akun')
