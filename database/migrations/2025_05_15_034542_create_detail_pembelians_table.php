@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('id_pembelian')
                 ->constrained('pembelian_bahanbaku', 'id_pembelian')
                 ->onDelete('cascade');
-            $table->foreignId('produk_id')
+            $table->foreignId('kode_produk')
                 ->constrained('produks')
                 ->onDelete('cascade');
             $table->integer('harga_satuan');
