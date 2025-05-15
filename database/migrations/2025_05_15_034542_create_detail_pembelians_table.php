@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('detail_pembelian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pembelian')->constrained('pembelian')->onDelete('cascade');
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
+            $table->foreignId('id_pembelian')
+                ->constrained('pembelian_bahanbaku', 'id_pembelian')
+                ->onDelete('cascade');
+            $table->foreignId('produk_id')
+                ->constrained('produks')
+                ->onDelete('cascade');
             $table->integer('harga_satuan');
             $table->integer('jml');
             $table->integer('subtotal');

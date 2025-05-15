@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            $table->string('Kode_supplier')->primary();
+            $table->string('Kode_supplier')->primary(); // Tetap pakai string sebagai PK
             $table->string('Nama_supplier');
             $table->string('Alamat_supplier');
             $table->string('Barang');
             $table->timestamps();
-            
         });
+
     }
 
     /**

@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('pembelian_bahanbaku', function (Blueprint $table) {
             $table->id('id_pembelian');
-            $table->foreignId('kode_supplier')->constrained('supplier')->onDelete('cascade');
-            $table->datetime('tgl_pembelian'); 
+            $table->string('kode_supplier'); // Sesuaikan dengan tipe di supplier
+            $table->foreign('kode_supplier')
+                ->references('Kode_supplier') // Cocokkan dengan nama kolom di supplier
+                ->on('suppliers')
+                ->onDelete('cascade');
+            $table->dateTime('tgl_pembelian'); 
             $table->decimal('total', 15, 2);
             $table->timestamps();
         });
+
     }
 
     /**
