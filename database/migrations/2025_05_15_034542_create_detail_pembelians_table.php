@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('detail_pembelian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pembelian')->constrained('bahanbaku')->onDelete('cascade');
-            $table->foreignId('kode_produk')->constrained('produk')->onDelete('cascade');
+            $table->foreignId('id_pembelian')->constrained('pembelian')->onDelete('cascade');
+            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
             $table->integer('harga_satuan');
-            $table->integer('jml'); // jumlah barang yang dibeli
-            $table->integer('subtotal'); 
+            $table->integer('jml');
+            $table->integer('subtotal');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_pembalian');
+        Schema::dropIfExists('detail_pembelian');
     }
 };
