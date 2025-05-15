@@ -6,3 +6,4 @@ if (!function_exists('rupiah')) {
         return 'Rp ' . number_format($angka, 0, ',', '.');
     }
 }
+
