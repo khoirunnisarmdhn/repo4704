@@ -45,3 +45,11 @@ Route::get('/contoh1', [App\Http\Controllers\Contoh1Controller::class, 'show']);
 
 Route::get('/contoh2', [App\Http\Controllers\Contoh2Controller::class, 'show']);
 Route::get('/coa', [App\Http\Controllers\CoaController::class, 'index']);
+
+// contoh sampel midtrans
+use App\Http\Controllers\CobaMidtransController;
+Route::get('/cekmidtrans', [CobaMidtransController::class, 'cekmidtrans']);
+
+// proses pengiriman email
+use App\Http\Controllers\PengirimanEmailController;
+Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);

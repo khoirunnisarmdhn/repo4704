@@ -35,8 +35,13 @@ use App\Models\Pegawai;
 // DB
 use Illuminate\Support\Facades\DB;
 // untuk dapat menggunakan action
-use Filament\Forms\Components\Actions\Action;
 use Illuminate\Support\HtmlString;
+
+// tambahan untuk tombol unduh pdf
+// use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\Action as TableAction; // alias agar jelas
+use Barryvdh\DomPDF\Facade\Pdf; // Kalau kamu pakai DomPDF
+use Illuminate\Support\Facades\Storage;
 
 class PenjualanResource extends Resource
 {
@@ -233,7 +238,7 @@ class PenjualanResource extends Resource
                         'bayar' => 'success',
                         'pesan' => 'warning',
                     }),
-                TextColumn::make('tagihan')
+                TextColumn::make('total')
                     ->formatStateUsing(fn(string|int|null $state): string => rupiah($state))
                     // ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
                     ->sortable()
@@ -255,6 +260,25 @@ class PenjualanResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            // tombol tambahan
+            ->headerActions([
+                // tombol tambahan export pdf
+                // ✅ Tombol Unduh PDF
+                TableAction::make('downloadPdf')
+                ->label('Unduh PDF')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('success')
+                ->action(function () {
+                    $penjualan = Penjualan::all();
+
+                    $pdf = Pdf::loadView('pdf.penjualan', ['penjualan' => $penjualan]);
+
+                    return response()->streamDownload(
+                        fn () => print($pdf->output()),
+                        'pelanggan-list.pdf'
+                    );
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
