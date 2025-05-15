@@ -28,11 +28,10 @@ class Penjualan extends Model
             $kd = $kdpmbl->no_faktur;
         }
         // Mengambil substring tiga digit akhir dari string PR-000
-        $noawal = substr($kd,-7);
-        $noakhir = $noawal+1; //menambahkan 1, hasilnya adalah integer cth 1
-        $noakhir = 'F-'.str_pad($noakhir,7,"0",STR_PAD_LEFT); //menyambung dengan string P-00001
+        $noawal = substr($kd, -7);
+        $noakhir = $noawal + 1; //menambahkan 1, hasilnya adalah integer cth 1
+        $noakhir = 'F-' . str_pad($noakhir, 7, "0", STR_PAD_LEFT); //menyambung dengan string P-00001
         return $noakhir;
-
     }
 
     // relasi ke tabel pembeli
@@ -42,9 +41,8 @@ class Penjualan extends Model
     }
 
     // relasi ke tabel penjualan barang
-    public function DetailPenjualan()
+    public function detailPenjualan()
     {
         return $this->hasMany(DetailPenjualan::class, 'id_penjualan');
     }
-
 }

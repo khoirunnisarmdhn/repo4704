@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('detail_penjualan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_penjualan')->constrained('penjualan')->onDelete('cascade');
-            $table->foreignId('kode_produk')->constrained('produk')->onDelete('cascade');
+            $table->string('kode_produk');
+            $table->foreign('kode_produk')->references('kode_produk')->on('produks')->onDelete('cascade');
+            $table->integer('jumlah'); // jumlah barang yang dibeli
             $table->integer('harga_satuan');
-            $table->integer('jml'); // jumlah barang yang dibeli
-            $table->integer('subtotal'); 
             $table->timestamps();
         });
     }
