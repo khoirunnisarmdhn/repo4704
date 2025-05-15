@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('penjualan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_pelanggan')->constrained('pelanggan')->onDelete('cascade');
-            $table->string('no_faktur'); 
-            $table->string('status'); 
-            $table->datetime('tgl'); 
-            $table->decimal('tagihan', 15, 2)->nullable();
+            $table->string('no_faktur');
+            $table->datetime('tgl_penjualan');
+            $table->string('status')->default('pesan');
+            $table->string('id_pegawai');
+            $table->foreign('id_pegawai')->references('id_pegawai')->on('pegawai')->onDelete('cascade');
+            $table->string('id_pelanggan');
+            $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggan')->onDelete('cascade');
+            $table->decimal('total', 15, 2)->nullable();
             $table->timestamps();
         });
     }

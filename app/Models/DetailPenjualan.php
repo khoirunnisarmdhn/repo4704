@@ -10,7 +10,7 @@ class DetailPenjualan extends Model
     use HasFactory;
 
     protected $table = 'detail_penjualan';
-    protected $fillable = ['id_detail_jual', 'id_penjualan', 'kode_produk', 'harga_satuan', 'jumlah', 'subtotal'];
+    protected $fillable = ['id_detail_jual', 'id_penjualan', 'kode_produk', 'harga_satuan', 'jumlah'];
 
     public function penjualan()
     {
