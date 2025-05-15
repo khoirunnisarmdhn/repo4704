@@ -42,12 +42,12 @@ class PenjualanResource extends Resource
 {
     protected static ?string $model = Penjualan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-arrow-up';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     // merubah nama label menjadi Pelanggan
     protected static ?string $navigationLabel = 'Penjualan';
 
-    // tambahan buat grup masterdata
+    // tambahan buat grup transaksi
     protected static ?string $navigationGroup = 'Transaksi';
 
     public static function form(Form $form): Form
