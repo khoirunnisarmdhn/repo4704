@@ -48,16 +48,17 @@ class ProdukResource extends Resource
                     ->placeholder('Masukkan jenis produk')
                 ,
                 TextInput::make('harga_produk')
-                    ->required()
-                    ->minValue(0) // Nilai minimal 0 (opsional jika tidak ingin ada harga negatif)
-                    ->reactive() // Menjadikan input reaktif terhadap perubahan
-                    ->extraAttributes(['id' => 'harga-produk']) // Tambahkan ID untuk pengikatan JavaScript
-                    ->placeholder('Masukkan harga produk') // Placeholder untuk membantu pengguna
-                    ->live()
-                    ->afterStateUpdated(fn ($state, callable $set) => 
-                    $set('harga_produk', number_format((int) str_replace(['.', ','], '', $state), 0, ',', '.'))
-                )
-                    ->dehydrateStateUsing(fn ($state) => (int) str_replace(['.', ','], '', $state)),
+                ->required()
+                ->reactive()
+                ->extraAttributes(['id' => 'harga-produk']) // untuk JS manual jika mau
+                ->placeholder('Masukkan harga produk')
+                ->live(onBlur: true) // hanya format saat blur (bukan saat diketik)
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if (is_numeric(str_replace(['.', ','], '', $state))) {
+                        $set('harga_produk', number_format((int) str_replace(['.', ','], '', $state), 0, ',', '.'));
+                    }
+                })
+                ->dehydrateStateUsing(fn ($state) => (int) str_replace(['.', ','], '', $state))
             ]);
     }
 
