@@ -31,6 +31,7 @@ use Filament\Tables\Filters\SelectFilter; //untuk menambahkan filter
 use App\Models\Produk;
 use App\Models\Pelanggan;
 use App\Models\DetailPenjualan;
+use App\Models\Pembayaran;
 
 // DB
 use Illuminate\Support\Facades\DB;
@@ -40,179 +41,166 @@ use Filament\Forms\Components\Actions\Action;
 class PenjualanResource extends Resource
 {
     protected static ?string $model = Penjualan::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-document-arrow-up';
-
-        // merubah nama label menjadi Pelanggan
     protected static ?string $navigationLabel = 'Penjualan';
-
-    // tambahan buat grup masterdata
     protected static ?string $navigationGroup = 'Transaksi';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                // Wizard
-                Wizard::make([
-                    Wizard\Step::make('Pesanan')
+        return $form->schema([
+            Wizard::make([
+                Wizard\Step::make('Pesanan')->schema([
+                    Forms\Components\Section::make('Faktur')
+                        ->icon('heroicon-m-document-duplicate')
                         ->schema([
-                        // section 1
-                            Forms\Components\Section::make('Faktur') // Bagian pertama
-                                // ->description('Detail Barang')
-                                ->icon('heroicon-m-document-duplicate')
-                                ->schema([ 
-                                    TextInput::make('no_faktur')
-                                        ->default(fn () => Penjualan::getKodeFaktur()) // Ambil default dari method getKodeBarang
-                                        ->label('Nomor Faktur')
-                                        ->required()
-                                        ->readonly() // Membuat field menjadi read-only
-                                    ,
-                                    DateTimePicker::make('tgl')->default(now()) // Nilai default: waktu sekarang
-                                    ,
-                                    Select::make('id_pelanggan')
-                                        ->label('Pelanggan')
-                                        ->options(Pelanggan::pluck('nama_pelanggan', 'id_pelanggan')->toArray()) // Mengambil data dari tabel
-                                        ->required()
-                                        ->placeholder('Pilih Pelanggan') // Placeholder default
-                                    ,
-                                    TextInput::make('tagihan')
-                                        ->default(0) // Nilai default
-                                        ->hidden()
-                                    ,
-                                    TextInput::make('status')
-                                        ->default('pesan') // Nilai default status pemesanan adalah pesan/bayar/kirim
-                                        ->hidden()
-                                    ,
-                                ])
-                                ->collapsible() // Membuat section dapat di-collapse
-                                ->columns(3)
-                            ,
-                        ]),
-                    Wizard\Step::make('Pilih Barang')
-                    ->schema([
-                        // 
-                            // untuk menambahkan repeater
-                            Repeater::make('items')
-                            ->relationship('DetailPenjualan')
-                            // ->live()
-                            ->schema([
-                                Select::make('kode_produk')
-                                        ->label('Produk')
-                                        ->options(Produk::pluck('nama_produk', 'kode_produk')->toArray())
-                                        // Mengambil data dari tabel
-                                        ->required()
-                                        ->disableOptionsWhenSelectedInSiblingRepeaterItems() //agar komponen item tidak berulang
-                                        ->reactive() // Membuat field reactive
-                                        ->placeholder('Pilih Produk') // Placeholder default
-                                        ->afterStateUpdated(function ($state, $set) {
-                                            $produk = Produk::find($state);
-                                            $set('harga_satuan', $produk ? $produk->harga_produk : 0);
-                                        })
-                                        ->searchable()
-                                ,
-                                TextInput::make('harga_satuan')
-                                    ->label('Harga Beli')
-                                    ->numeric()
-                                    ->default(fn ($get) => $get('kode_produk') ? Produk::find($get('kode_produk'))?->harga_produk ?? 0 : 0)
-                                    ->readonly() // Agar pengguna tidak bisa mengedit
-                                    ->hidden()
-                                    ->dehydrated()
-                                
-                                ,
-                                TextInput::make('jml')
-                                    ->label('Jumlah')
-                                    ->default(1)
-                                    ->reactive()
-                                    ->live()
-                                    ->required()
-                                    ->afterStateUpdated(function ($state, $set, $get) {
-                                        // $harga = $get('harga_jual'); // Ambil harga produk
-                                        // $total = $harga * $state; // Hitung total
-                                        // $set('total', $total); // Set total secara otomatis
-                                        $subtotal = collect($get('DetailPenjualan'))
-                                        ->sum(fn ($item) => ($item['harga_satuan'] ?? 0) * ($item['jumlah'] ?? 0));
-                                        $set('jumlah', $jumlah);
-                                    })
-                                ,
-                                DatePicker::make('tgl')
-                                ->default(today()) // Nilai default: hari ini
-                                ->required(),
-                            ])
-                            ->columns([
-                                'md' => 4, //mengatur kolom menjadi 4
-                            ])
-                            ->addable()
-                            ->deletable()
-                            ->reorderable()
-                            ->createItemButtonLabel('Tambah Item') // Tombol untuk menambah item baru
-                            ->minItems(1) // Minimum item yang harus diisi
-                            ->required() // Field repeater wajib diisi
-                            ,
+                            TextInput::make('no_faktur')
+                                ->default(fn () => Penjualan::getKodeFaktur())
+                                ->label('Nomor Faktur')
+                                ->required()
+                                ->readonly(),
 
-                            //tambahan form simpan sementara
-                            // **Tombol Simpan Sementara**
-                            Forms\Components\Actions::make([
-                                Forms\Components\Actions\Action::make('Simpan Sementara')
-                                    ->action(function ($get) {
-                                        $penjualan = Penjualan::updateOrCreate(
-                                            ['no_faktur' => $get('no_faktur')],
-                                            [
-                                                'tgl' => $get('tgl'),
-                                                'id_pelanggan' => $get('id_pelanggan'),
-                                                'status' => 'pesan',
-                                                'tagihan' => 0
-                                            ]
-                                        );
+                            DateTimePicker::make('tgl')->default(now()),
 
-                                        // Simpan data produk
-                                        foreach ($get('items') as $item) {
-                                            DetailPenjualan::updateOrCreate(
-                                                [
-                                                    'id_penjualan' => $penjualan->id,
-                                                    'kode_produk' => $item['kode_produk']
-                                                ],
-                                                [
-                                                    'harga_beli' => $item['harga_beli'],
-                                                    'harga_jual' => $item['harga_jual'],
-                                                    'jml' => $item['jml'],
-                                                    'tgl' => $item['tgl'],
-                                                ]
-                                            );
+                            Select::make('id_pelanggan')
+                                ->label('Pelanggan')
+                                ->options(Pelanggan::pluck('nama_pelanggan', 'id_pelanggan')->toArray())
+                                ->required()
+                                ->placeholder('Pilih Pelanggan'),
 
-                                            // Kurangi stok produk di tabel produk
-                                            $produk = produk::find($item['kode_produk']);
-                                            if ($produk) {
-                                                $produk->decrement('stok', $item['jml']); // Kurangi stok sesuai jumlah barang yang dibeli
-                                            }
-                                        }
+                            TextInput::make('tagihan')->default(0)->hidden(),
+                            TextInput::make('status')->default('pesan')->hidden(),
+                        ])
+                        ->collapsible()
+                        ->columns(3),
+                ]),
 
-                                        // Hitung total tagihan
-                                        $totalTagihan = DetailPenjualan::where('id_penjualan', $penjualan->id)
-                                            ->sum(DB::raw('harga_jual * jml'));
+                Wizard\Step::make('Pilih Barang')->schema([
+                    Repeater::make('items')
+                        ->relationship('DetailPenjualan')
+                        ->schema([
+                            Select::make('kode_produk')
+                                ->label('Produk')
+                                ->options(Produk::pluck('nama_produk', 'kode_produk')->toArray())
+                                ->required()
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                ->reactive()
+                                ->placeholder('Pilih Produk')
+                                ->afterStateUpdated(function ($state, $set) {
+                                    $produk = Produk::find($state);
+                                    $set('harga_produk', $produk?->harga_produk ?? 0);
+                                    $set('subtotal', 0);
+                                }),
 
-                                        // Update tagihan di tabel penjualan2
-                                        $penjualan->update(['tagihan' => $totalTagihan]);
-                                                                    })
-                                        
-                                        ->label('Proses')
-                                        ->color('primary'),
-                                                            
-                                    ])    
-       
-                        // 
+                            TextInput::make('harga_produk')
+                                ->numeric()
+                                ->dehydrated()
+                                ->default(0),
+
+                            TextInput::make('jml')
+                                ->numeric()
+                                ->default(1)
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, $set, $get) {
+                                    $subtotal = ($get('harga_produk') ?? 0) * $state;
+                                    $set('subtotal', $subtotal);
+                                }),
+
+                            TextInput::make('subtotal')
+                                ->numeric()
+                                ->default(0),
+                        ])
+                        ->columns(4)
+                        ->addable()
+                        ->deletable()
+                        ->reorderable()
+                        ->createItemButtonLabel('Tambah Item')
+                        ->minItems(1)
+                        ->required(),
+
+                    Forms\Components\Actions::make([
+                        Action::make('Simpan Sementara')
+                            ->action(function ($get) {
+                                $penjualan = Penjualan::updateOrCreate(
+                                    ['no_faktur' => $get('no_faktur')],
+                                    [
+                                        'tgl' => $get('tgl'),
+                                        'id_pelanggan' => $get('id_pelanggan'),
+                                        'status' => 'pesan',
+                                        'tagihan' => 0
+                                    ]
+                                );
+
+                                foreach ($get('items') as $item) {
+                                    DetailPenjualan::updateOrCreate(
+                                        [
+                                            'id_penjualan' => $penjualan->id,
+                                            'kode_produk' => $item['kode_produk']
+                                        ],
+                                        [
+                                            'harga_produk' => $item['harga_produk'],
+                                            'jml' => $item['jml'],
+                                            'subtotal' => $item['subtotal']
+                                        ]
+                                    );
+
+                                    $produk = Produk::find($item['kode_produk']);
+                                    if ($produk) {
+                                        $produk->decrement('stok', $item['jml']);
+                                    }
+                                }
+
+                                $totalTagihan = DetailPenjualan::where('id_penjualan', $penjualan->id)
+                                    ->sum('subtotal');
+
+                                $penjualan->update(['tagihan' => $totalTagihan]);
+                            })
+                            ->label('Proses')
+                            ->color('primary'),
                     ])
-                    ,
-                    Wizard\Step::make('Pembayaran')
-                        ->schema([
-                            Placeholder::make('Tabel Pembayaran')
-                                    ->content(fn (Get $get) => view('filament.components.penjualan-table', [
-                                        'pembayarans' => Penjualan::where('no_faktur', $get('no_faktur'))->get()
-                                ])), 
-                        ]),
-                ])->columnSpan(3)
-                // Akhir Wizard
-            ]);
+                ]),
+
+                Wizard\Step::make('Pembayaran')->schema([
+                    DatePicker::make('tgl_pembayaran')
+                        ->label('Tanggal Pembayaran')
+                        ->default(today())
+                        ->required(),
+
+                    TextInput::make('jumlah_bayar')
+                        ->label('Jumlah Bayar')
+                        ->numeric()
+                        ->required(),
+
+                    Select::make('metode_pembayaran')
+                        ->label('Metode Pembayaran')
+                        ->options([
+                            'tunai' => 'Tunai',
+                            'transfer' => 'Transfer',
+                            'qris' => 'QRIS',
+                        ])
+                        ->required(),
+
+                    Forms\Components\Actions::make([
+                        Action::make('Simpan Pembayaran')
+                            ->action(function ($get) {
+                                $penjualan = Penjualan::where('no_faktur', $get('no_faktur'))->first();
+
+                                if ($penjualan) {
+                                    Pembayaran::create([
+                                        'id_penjualan' => $penjualan->id,
+                                        'tgl_pembayaran' => $get('tgl_pembayaran'),
+                                        'jumlah_bayar' => $get('jumlah_bayar'),
+                                        'metode_pembayaran' => $get('metode_pembayaran'),
+                                    ]);
+
+                                    $penjualan->update(['status' => 'bayar']);
+                                }
+                            })
+                            ->label('Simpan Pembayaran')
+                            ->color('success')
+                    ])
+                ])
+            ])->columnSpan(3)
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -220,10 +208,7 @@ class PenjualanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('no_faktur')->label('No Faktur')->searchable(),
-                TextColumn::make('pelanggan.nama_pelanggan') // Relasi ke nama pelanggan 
-                    ->label('Nama Pelanggan')
-                    ->sortable()
-                    ->searchable(),
+                TextColumn::make('pelanggan.nama_pelanggan')->label('Nama Pelanggan')->sortable()->searchable(),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -231,11 +216,9 @@ class PenjualanResource extends Resource
                         'pesan' => 'warning',
                     }),
                 TextColumn::make('tagihan')
-                    ->formatStateUsing(fn (string|int|null $state): string => rupiah($state))
-                    // ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
+                    ->formatStateUsing(fn ($state): string => rupiah($state))
                     ->sortable()
-                    ->alignment('end') // Rata kanan
-                ,
+                    ->alignment('end'),
                 TextColumn::make('created_at')->label('Tanggal')->dateTime(),
             ])
             ->filters([
@@ -246,7 +229,7 @@ class PenjualanResource extends Resource
                         'bayar' => 'Pembayaran',
                     ])
                     ->searchable()
-                    ->preload(), // Menampilkan semua opsi saat filter diklik
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -262,9 +245,7 @@ class PenjualanResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
