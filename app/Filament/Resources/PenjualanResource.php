@@ -180,11 +180,11 @@ class PenjualanResource extends Resource
                                         }
 
                                         // Hitung total tagihan
-                                        $totalTagihan = DetailPenjualan::where('id_penjualan', $penjualan->id)
+                                        $total = DetailPenjualan::where('id_penjualan', $penjualan->id)
                                             ->sum(DB::raw('harga_satuan * jumlah'));
 
                                         // Update tagihan di tabel penjualan2
-                                        $penjualan->update(['total' => $totalTagihan]);
+                                        $penjualan->update(['total' => $total]);
                                     })
 
                                     ->label('Proses')
@@ -233,7 +233,8 @@ class PenjualanResource extends Resource
                         'bayar' => 'success',
                         'pesan' => 'warning',
                     }),
-                TextColumn::make('tagihan')
+                TextColumn::make('total')
+                    ->label('Tagihan')
                     ->formatStateUsing(fn(string|int|null $state): string => rupiah($state))
                     // ->extraAttributes(['class' => 'text-right']) // Tambahkan kelas CSS untuk rata kanan
                     ->sortable()
