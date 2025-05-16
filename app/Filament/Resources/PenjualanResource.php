@@ -175,7 +175,7 @@ class PenjualanResource extends Resource
                                             // Kurangi stok produk di tabel produk
                                             $produk = produk::find($item['kode_produk']);
                                             if ($produk) {
-                                                $produk->decrement('stok', $item['jml']); // Kurangi stok sesuai jumlah barang yang dibeli
+                                                $produk->decrement('stok', $item['jumlah']); // Kurangi stok sesuai jumlah barang yang dibeli
                                             }
                                         }
 
