@@ -216,6 +216,7 @@
         <div class="bootstrap-tabs product-tabs">
           <div class="tabs-header d-flex justify-content-between border-bottom my-5">
             <h3>Produk Terbaru</h3>
+            <h1>testing github</h1>
           </div>
           <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab">
