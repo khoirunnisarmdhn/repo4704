@@ -21,77 +21,56 @@ class PembelianBahanBakuResource extends Resource
     protected static ?string $navigationLabel = 'Pembelian Bahan Baku';
     protected static ?string $navigationGroup = 'Transaksi';
 
-  public static function form(Form $form): Form
-{
-    return $form
-        ->schema([
-            // Select untuk memilih kode_supplier
-            Select::make('kode_supplier')
-                ->label('Kode Supplier')
-                ->relationship('supplier', 'kode_supplier') // Mengambil kode_supplier dari Supplier
-                ->required()
-                ->searchable()
-                ->reactive()  // Agar bisa mengambil barang setelah memilih supplier
-                ->afterStateUpdated(function (callable $set, $state) {
-                    // Mengambil nilai Barang dari Supplier berdasarkan kode_supplier yang dipilih
-                    if ($state) {
-                        // Mengambil supplier berdasarkan kode_supplier yang dipilih
-                        $supplier = Supplier::where('kode_supplier', $state)->first();
-                        // Debugging untuk melihat apakah supplier ditemukan
-                        if ($supplier) {
-                            // Jika supplier ditemukan, set nilai barang
-                            $set('Barang', $supplier->Barang);
-                        } else {
-                            // Jika tidak ditemukan, kosongkan barang
-                            $set('Barang', '');
-                        }
-                    } else {
-                        // Reset barang jika kode_supplier kosong
-                        $set('Barang', '');
-                    }
-                }),
-
-            // Kolom untuk menampilkan barang yang terisi otomatis
-            TextInput::make('Barang')  // Menggunakan huruf kecil agar sesuai dengan nama kolom
-                ->label('Barang')
-                ->disabled()  // Disabled karena otomatis terisi berdasarkan kode_supplier
-                ->required(), // Barang tetap wajib diisi meskipun terisi otomatis
-
-            // Select untuk memilih status
-            Select::make('status')
-                ->label('Status')
-                ->options([
-                    'pending' => 'Pending',
-                    'selesai' => 'Selesai',
-                ])
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('kode_supplier')
+                ->label('kode_supplier')
+                ->default(function () {
+                    $latest = \App\Models\PembelianBahanBaku::latest('kode_supplier')->first();
+                    $lastNumber = $latest ? (int)substr($latest->kode, 1) : 0;
+                    $newNumber = $lastNumber + 1;
+                    return 'P' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+                })
+                ->dehydrated()
+                ->disabled()
                 ->required(),
-        ]);
-}
 
-    
+                Select::make('kode_supplier')
+                    ->label('Supplier')
+                    ->relationship('kode_supplier', 'nama')
+                    ->searchable()
+                    ->required(),
 
-   public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            TextColumn::make('kode_supplier')->sortable()->searchable(),
-            TextColumn::make('supplier.nama')->label('Supplier'),
-            TextColumn::make('status')->badge(),
-            TextColumn::make('created_at')->dateTime()->label('Tanggal Pembelian'),
-        ])
-        ->actions([
-            // Aksi View (melihat detail)
-            Tables\Actions\ViewAction::make(),
-            // Aksi Edit (untuk mengedit)
-            Tables\Actions\EditAction::make(),
-            // Aksi Delete (untuk menghapus)
-            Tables\Actions\DeleteAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\DeleteBulkAction::make(),
-        ]);
-}
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'selesai' => 'Selesai',
+                    ])
+                    ->required(),
+            ]);
+    }
 
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('kode_supplier')->sortable()->searchable(),
+                TextColumn::make('supplier.nama')->label('supplier'),
+                TextColumn::make('status')->badge(),
+                TextColumn::make('created_at')->dateTime()->label('Tanggal Pembelian'),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]);
+    }
 
     public static function getRelations(): array
     {
