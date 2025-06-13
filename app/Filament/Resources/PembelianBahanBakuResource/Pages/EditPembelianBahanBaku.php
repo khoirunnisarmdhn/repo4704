@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\PembelianBahanBakuResource\Pages;
 
-use App\Filament\Resources\PembelianBahanBakuResource;
 use Filament\Actions;
+use App\Models\PembelianBahanBaku;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\PembelianBahanBakuResource;
 
 class EditPembelianBahanBaku extends EditRecord
 {
-    protected static string $resource = PembelianBahanBakuResource::class;
+ protected static string $resource = PembelianBahanBakuResource::class;
 
-    protected function getHeaderActions(): array
+    public function mount($record): void
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        // Pastikan record diambil dengan benar
+        $this->record = PembelianBahanBaku::findOrFail($record);
     }
 }

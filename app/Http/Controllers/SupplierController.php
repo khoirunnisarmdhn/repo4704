@@ -13,7 +13,7 @@ class supplierController extends Controller
      */
     public function index()
     {
-        $pegawai = supplier::all();
+        $supplier= supplier::all();
         return view('supplier/view',
                         [ 
                             'supplier'=>$supplier,

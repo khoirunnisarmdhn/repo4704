@@ -16,15 +16,16 @@ public function show(){
     'nama' => 'Di akses dari controller'
     ]
     );
+}
 
-    public static function show(){
-        return view(
-                        'layout',
-                        [
-                            'title'=>'Selamat Datang Web Framework',
-                            'nama' => 'Di akses dari controller'
-                        ]
-        );
+// public static function show(){
+//         return view(
+//                         'layout',
+//                         [
+//                             'title'=>'Selamat Datang Web Framework',
+//                             'nama' => 'Di akses dari controller'
+//                         ]
+//         );
 
-    }
+//     }
 }

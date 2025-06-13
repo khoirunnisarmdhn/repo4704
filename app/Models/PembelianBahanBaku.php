@@ -17,7 +17,12 @@ class PembelianBahanBaku extends Model
     public $incrementing = false; // karena ID bukan auto-increment (asumsi)
     protected $keyType = 'string'; // jika id_pembelian berupa kode (misal: PB-00001)
 
-    protected $guarded = []; // semua kolom bisa diisi massal
+        protected $fillable = [
+        'id_pembelian',
+        'kode_supplier', 
+        'barang', 
+        'status',
+    ];
 
     /**
      * Generate Kode Faktur Pembelian otomatis.
@@ -33,6 +38,7 @@ class PembelianBahanBaku extends Model
     /**
      * Relasi ke tabel Supplier
      */
+     // Relasi dengan Supplier
     public function supplier()
     {
         return $this->belongsTo(Supplier::class, 'kode_supplier', 'kode_supplier');

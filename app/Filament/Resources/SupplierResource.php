@@ -24,34 +24,30 @@ class supplierResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
-    public static function form(Form $form): Form
-    {
-        return $form
+  public static function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Grid::make()->columns(1) // Membuat hanya 1 kolom
             ->schema([
-                Grid::make()->columns(1) // Membuat hanya 1 kolom
-                ->schema([
-                    TextInput::make('Kode_supplier')
-                        ->required()
-                        ->placeholder('Masukkan Kode supplier')
-                    ,
-                    TextInput::make('Nama_supplier')
-                        ->required()
-                        ->placeholder('Masukkan Nama Supplier')
-                    ,
-                        TextInput::make('Alamat_supplier')
-                        ->required()
-                        ->placeholder('Masukkan Alamat supplier')
-                    ,
-                    TextInput::make('Barang')
-                        ->autocapitalize('words')
-                        ->label('Barang')
-                        ->required()
-                        ->placeholder('Masukkan Barang')
-                    ,
-                ]),
-            ]);
-    }
-
+                // Hapus input untuk Kode_supplier
+                TextInput::make('Nama_supplier')
+                    ->required()
+                    ->placeholder('Masukkan Nama Supplier')
+                ,
+                TextInput::make('Alamat_supplier')
+                    ->required()
+                    ->placeholder('Masukkan Alamat supplier')
+                ,
+                TextInput::make('Barang')
+                    ->autocapitalize('words')
+                    ->label('Barang')
+                    ->required()
+                    ->placeholder('Masukkan Barang')
+                ,
+            ]),
+        ]);
+}
     public static function table(Table $table): Table
     {
         return $table

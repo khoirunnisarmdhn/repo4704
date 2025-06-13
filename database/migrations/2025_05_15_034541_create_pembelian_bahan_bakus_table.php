@@ -18,8 +18,7 @@ return new class extends Migration
                 ->references('Kode_supplier') // Cocokkan dengan nama kolom di supplier
                 ->on('suppliers')
                 ->onDelete('cascade');
-            $table->dateTime('tgl_pembelian'); 
-            $table->decimal('total', 15, 2);
+            $table->enum('status', ['pending', 'selesai'])->default('pending'); // Status pembelian
             $table->timestamps();
         });
 
