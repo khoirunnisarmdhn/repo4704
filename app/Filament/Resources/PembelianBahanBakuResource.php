@@ -37,9 +37,9 @@ class PembelianBahanBakuResource extends Resource
                 ->disabled()
                 ->required(),
 
-                Select::make('kode_supplier')
+                Select::make('Supplier')
                     ->label('Supplier')
-                    ->relationship('kode_supplier', 'nama')
+                    ->relationship('supplier', 'nama')
                     ->searchable()
                     ->required(),
 

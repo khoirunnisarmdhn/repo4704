@@ -97,7 +97,7 @@ class PenjualanResource extends Resource
                                 ->collapsible() // Membuat section dapat di-collapse
                                 ->columns(2),
                         ]),
-                    Wizard\Step::make('Pilih Barang')
+                    Wizard\Step::make('Pilih Produk')
                         ->schema([
                             // 
                             // untuk menambahkan repeater
@@ -135,7 +135,7 @@ class PenjualanResource extends Resource
                                             $subtotal = collect($get('DetailPenjualan'))
                                                 ->sum(fn($item) => ($item['harga_satuan'] ?? 0) * ($item['jumlah'] ?? 0));
 
-                                            $set('total', $subtotal); // Set kolom `total` di form utama (misalnya field di luar repeater)
+                                            $set('total', $subtotal); // Set kolom total di form utama (misalnya field di luar repeater)
                                         }),
                                 ])
                                 ->columns([
@@ -150,7 +150,7 @@ class PenjualanResource extends Resource
                             ,
 
                             //tambahan form simpan sementara
-                            // *Tombol Simpan Sementara*
+                            // Tombol Simpan Sementara
                             Forms\Components\Actions::make([
                                 Forms\Components\Actions\Action::make('Simpan Sementara')
                                     ->action(function ($get) {
@@ -200,24 +200,41 @@ class PenjualanResource extends Resource
                             // 
                         ]),
                     Wizard\Step::make('Pembayaran')
-                        ->schema([
-                            Placeholder::make('Tabel Pembayaran')
-                                ->content(function (Get $get) {
-                                    $penjualans = \App\Models\Penjualan::where('no_faktur', $get('no_faktur'))
-                                        ->with('detailPenjualan')
-                                        ->get();
+    ->schema([
+        // Tabel pembayaran yang sudah ada
+        Placeholder::make('Tabel Pembayaran')
+             ->content(fn (Get $get) => view('filament.components.penjualan-table', [
+                                        'penjualans' => Penjualan::where('no_faktur', $get('no_faktur'))->get()
+                                ])), 
+            
+            
+        // Tambahkan tombol Bayar
+        Forms\Components\Actions::make([
+            Forms\Components\Actions\Action::make('Bayar')
+                ->label('Proses Pembayaran')
+                ->color('success')
+                ->icon('heroicon-o-banknotes')
+                ->action(function ($get, $set) {
+                    // Validasi
+                    if (empty($get('items'))) {
+                        throw new \Exception('Tidak ada item untuk dibayar');
+                    }
+                    
+                    // Update status menjadi 'bayar'
+                    $penjualan = Penjualan::where('no_faktur', $get('no_faktur'))->first();
+                    $penjualan->update(['status' => 'bayar']);
+                    
 
-                                    if ($penjualans->isEmpty()) {
-                                        return 'Tidak ada data penjualan.';
-                                    }
-
-                                    return new HtmlString(
-                                        view('filament.components.penjualan-table', [
-                                            'penjualans' => $penjualans
-                                        ])->render()
-                                    );
-                                }),
-                        ])
+                    
+                    // Redirect atau tindakan lain
+                    return redirect()->route('filament.admin.resources.penjualans.index');
+                })
+                ->requiresConfirmation()
+                ->modalHeading('Konfirmasi Pembayaran')
+                ->modalDescription('Apakah Anda yakin ingin memproses pembayaran ini?')
+                ->modalSubmitActionLabel('Ya, Proses Pembayaran')
+        ])
+    ])
                 ])->columnSpan(3)
                 // Akhir Wizard
             ]);
@@ -251,15 +268,32 @@ class PenjualanResource extends Resource
                     ->label('Filter Status')
                     ->options([
                         'pesan' => 'Pemesanan',
-                        'bayar' => 'Pembayaran',
+                        'bayar' => 'pembayaran',
                     ])
                     ->searchable()
                     ->preload(), // Menampilkan semua opsi saat filter diklik
+
+            ])
+            ->Actions([
+                Tables\Actions\Action::make('Bayar')
+                    ->action(function (Penjualan $record) {
+                        $record->update(['status' => 'bayar']);
+                        Notification::make()
+                            ->title('Status diperbarui ke Bayar')
+                            ->success()
+                            ->send();
+        })
+        ->visible(fn (Penjualan $record): bool => $record->status === 'pesan')
+        ->color('success'),
+
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
+
             ])
             // tombol tambahan
             ->headerActions([
