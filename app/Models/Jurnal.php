@@ -13,6 +13,12 @@ class Jurnal extends Model
 
     protected $guarded = [];
 
+    // relasi ke COA
+    public function coa()
+    {
+    return $this->belongsTo(Coa::class, 'kode_akun');
+    }
+
     // relasi ke jurnal detail
     public function jurnaldetail()
     {
