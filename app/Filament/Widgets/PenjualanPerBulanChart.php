@@ -42,7 +42,6 @@ class PenjualanPerBulanChart extends ChartWidget
                 [
                     'label' => 'Total Penjualan',
                     'data' => $data,
-                    'backgroundColor' => '#36A2EB',
                 ],
             ],
             'labels' => $labels,
