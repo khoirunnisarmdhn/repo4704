@@ -6,8 +6,8 @@ use Filament\Pages\Page;
 
 // tambahan untuk cluster
 use Phpml\Clustering\KMeans;
-use App\Models\Penjualan2;
-use App\Models\Pembeli2;
+use App\Models\Penjualan;
+use App\Models\Pelanggan;
 
 class ClusteringVisual extends Page
 {
@@ -32,7 +32,7 @@ class ClusteringVisual extends Page
         // ];
 
         // Data dinamis untuk clustering
-        $samples = Pembeli2::join('penjualan2', 'penjualan2.pembeli_id', '=', 'pembeli2.id')
+        $samples = Pelanggan::join('penjualan2', 'penjualan2.pembeli_id', '=', 'pembeli2.id')
             ->join('penjualan_barang2', 'penjualan2.id', '=', 'penjualan_barang2.penjualan_id')
             ->where('penjualan2.status', 'bayar')
             ->select('pembeli2.nama_pembeli as name', \DB::raw('SUM(penjualan2.tagihan) AS x'), \DB::raw('SUM(penjualan_barang2.jml) AS y'))
