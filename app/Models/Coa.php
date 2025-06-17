@@ -14,4 +14,9 @@ class Coa extends Model
     public $incrementing = false; // Karena kode_akun bukan auto-increment
     protected $keyType = 'string'; // Karena kode_akun berupa string
     protected $guarded = [];
+    
+    public function journalDetail()
+    {
+        return $this->hasMany(JurnalDetail::class);
+    }
 }

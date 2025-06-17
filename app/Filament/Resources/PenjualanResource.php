@@ -135,7 +135,7 @@ class PenjualanResource extends Resource
                                             $subtotal = collect($get('DetailPenjualan'))
                                                 ->sum(fn($item) => ($item['harga_satuan'] ?? 0) * ($item['jumlah'] ?? 0));
 
-                                            $set('total', $subtotal); // Set kolom `total` di form utama (misalnya field di luar repeater)
+                                            $set('total', $subtotal); // Set kolom total di form utama (misalnya field di luar repeater)
                                         }),
                                 ])
                                 ->columns([
@@ -150,7 +150,7 @@ class PenjualanResource extends Resource
                             ,
 
                             //tambahan form simpan sementara
-                            // *Tombol Simpan Sementara*
+                            // Tombol Simpan Sementara
                             Forms\Components\Actions::make([
                                 Forms\Components\Actions\Action::make('Simpan Sementara')
                                     ->action(function ($get) {
@@ -203,9 +203,10 @@ class PenjualanResource extends Resource
     ->schema([
         // Tabel pembayaran yang sudah ada
         Placeholder::make('Tabel Pembayaran')
-            ->content(function (Get $get) {
-                // ... kode existing Anda ...
-            }),
+             ->content(fn (Get $get) => view('filament.components.penjualan-table', [
+                                        'penjualans' => Penjualan::where('no_faktur', $get('no_faktur'))->get()
+                                ])), 
+            
             
         // Tambahkan tombol Bayar
         Forms\Components\Actions::make([
@@ -223,11 +224,7 @@ class PenjualanResource extends Resource
                     $penjualan = Penjualan::where('no_faktur', $get('no_faktur'))->first();
                     $penjualan->update(['status' => 'bayar']);
                     
-                    Notification::make()
-                        ->title('Pembayaran Berhasil')
-                        ->body('Status telah diubah menjadi Bayar')
-                        ->success()
-                        ->send();
+
                     
                     // Redirect atau tindakan lain
                     return redirect()->route('filament.admin.resources.penjualans.index');
