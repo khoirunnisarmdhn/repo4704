@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Supplier extends Model
 {
     use HasFactory;
@@ -23,4 +24,11 @@ class Supplier extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function supplier()
+{
+    return $this->belongsTo(Supplier::class, 'kode_supplier', 'Kode_supplier');
+}
+
+
 }
