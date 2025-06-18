@@ -1,0 +1,33 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+@layer components {
+    /* Jadikan konten utama full width */
+    .fi-main {
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        @apply bg-primary-900 text-white;
+    }
+
+    /* Tambahan lain (sebelumnya) */
+    .fi-sidebar {
+        @apply bg-primary-800 text-white;
+    }
+
+    .fi-topbar {
+        @apply bg-primary-900 text-white;
+    }
+
+    .fi-sidebar-item {
+        @apply text-white;
+    }
+
+    .fi-sidebar-item:hover,
+    .fi-sidebar-item-active {
+        @apply bg-primary-950 text-white;
+    }
+}

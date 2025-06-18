@@ -22,36 +22,40 @@ class PembelianBahanBakuResource extends Resource
     protected static ?string $navigationGroup = 'Transaksi';
 
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                TextInput::make('kode_supplier')
-                ->label('kode_supplier')
-                ->default(function () {
-                    $latest = \App\Models\PembelianBahanBaku::latest('kode_supplier')->first();
-                    $lastNumber = $latest ? (int)substr($latest->kode, 1) : 0;
-                    $newNumber = $lastNumber + 1;
-                    return 'P' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+{
+    return $form
+        ->schema([
+
+            Select::make('supplier_id')
+                ->label('Nama Supplier')
+                ->relationship('Kode supplier', 'Nama supplier') // relasi supplier_id ke nama
+                ->searchable()
+                ->reactive()
+                ->afterStateUpdated(function (\Closure $set, $state) {
+                    $supplier = Supplier::find($state);
+                    if ($supplier) {
+                        $set('kode_supplier', $supplier->kode_supplier); // isi otomatis
+                    }
                 })
-                ->dehydrated()
-                ->disabled()
                 ->required(),
 
-                Select::make('kode_supplier')
-                    ->label('Supplier')
-                    ->relationship('kode_supplier', 'nama')
-                    ->searchable()
-                    ->required(),
+            Select::make('kode_supplier')
+                        ->label('Kode Supplier')
+                        ->options(Supplier::all()->pluck('kode_supplier', 'kode_supplier'))
+                        ->searchable()
+                        ->required(),
 
-                Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'selesai' => 'Selesai',
-                    ])
-                    ->required(),
-            ]);
-    }
+            Select::make('status')
+                ->label('Status')
+                ->options([
+                    'pending' => 'Pending',
+                    'selesai' => 'Selesai',
+                ])
+                ->required(),
+        ]);
+}
+
+
 
     public static function table(Table $table): Table
     {
