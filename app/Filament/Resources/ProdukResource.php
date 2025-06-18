@@ -37,7 +37,7 @@ class ProdukResource extends Resource
                     ->default(fn () => Produk::getKodeProduk()) // Ambil default dari method getKodeBarang
                     ->label('Kode Produk')
                     ->required()
-                    ->readonly() // Membuat field menjadi read-only
+                    ->placeholder('Masukkan kode produk') 
                 ,
                 TextInput::make('nama_produk')
                     ->required()

@@ -24,35 +24,34 @@ class PembelianBahanBakuResource extends Resource
     public static function form(Form $form): Form
 {
     return $form
-        ->schema([
 
-            Select::make('supplier_id')
-                ->label('Nama Supplier')
-                ->relationship('Kode supplier', 'Nama supplier') // relasi supplier_id ke nama
-                ->searchable()
-                ->reactive()
-                ->afterStateUpdated(function (\Closure $set, $state) {
-                    $supplier = Supplier::find($state);
-                    if ($supplier) {
-                        $set('kode_supplier', $supplier->kode_supplier); // isi otomatis
-                    }
-                })
-                ->required(),
-
-            Select::make('kode_supplier')
+            ->schema([
+                Select::make('kode_supplier')
                         ->label('Kode Supplier')
                         ->options(Supplier::all()->pluck('kode_supplier', 'kode_supplier'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                ,
+                 Select::make('nama_supplier')
+                        ->label('Nama Supplier')
+                        ->options(Supplier::all()->pluck('nama_supplier', 'nama_supplier'))
+                        ->searchable()
+                        ->required()
+                        ->searchable()
+                        ->required()
 
-            Select::make('status')
+
+                   
+                ,
+                Select::make('status')
                 ->label('Status')
                 ->options([
                     'pending' => 'Pending',
                     'selesai' => 'Selesai',
                 ])
                 ->required(),
-        ]);
+
+            ]);
 }
 
 
@@ -62,7 +61,7 @@ class PembelianBahanBakuResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('kode_supplier')->sortable()->searchable(),
-                TextColumn::make('supplier.nama')->label('supplier'),
+                TextColumn::make('nama_supplier')->label('Nama Supplier'),
                 TextColumn::make('status')->badge(),
                 TextColumn::make('created_at')->dateTime()->label('Tanggal Pembelian'),
             ])

@@ -35,7 +35,7 @@ class PembelianBahanBaku extends Model
      */
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class, 'kode_supplier', 'kode_supplier');
+        return $this->hasMany(Supplier::class, 'kode_supplier', 'kode_supplier');
     }
 
     /**
@@ -43,6 +43,6 @@ class PembelianBahanBaku extends Model
      */
     public function detailPembelian()
     {
-        return $this->hasMany(DetailPembelian::class, 'id_pembelian');
+        return $this->hasMany(Supplier::class, 'Nama_supplier', 'nama_supplier');
     }
 }

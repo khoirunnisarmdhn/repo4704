@@ -38,8 +38,8 @@
             
                 <br><br>
                
-                <div class="col-sm-12" style="background-color:white;" align="center">
-                    <b>Toko Mukena</b><br>
+                <div class="col-sm-12" style="background-color:black;" align="center">
+                    <b>Ayam Geprek Meriam</b><br>
                     <b>Buku Besar</b><br>
                     <b>
                     Periode 
