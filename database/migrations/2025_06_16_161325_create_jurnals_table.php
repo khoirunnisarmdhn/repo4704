@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_akun');
             $table->foreign('nama_akun')->references('nama_akun')->on('coa')->onDelete('cascade');
             $table->string('kode_akun');
-            $table->foreign('kode_akun')->afterStateUpdated('kode_akun')->on('coa');
+            $table->foreign('kode_akun')->references('kode_akun')->on('coa')->onDelete('cascade');
             $table->string('deskripsi')->nullable();
             $table->timestamps();
         });
