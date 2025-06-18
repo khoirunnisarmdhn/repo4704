@@ -9,6 +9,6 @@
 @else
     <div class="flex items-center text-nowrap gap-2">
         <img src="{{ asset('images/admin/logo.png') }}" alt="Logo" class="h-14">
-        <span class="text-xl font-bold text-white">Ayam Geprek Meriam</span>
+        <span class="text-xl font-bold text-white">AYAM GEPREK MERIAM</span>
     </div>
 @endif
