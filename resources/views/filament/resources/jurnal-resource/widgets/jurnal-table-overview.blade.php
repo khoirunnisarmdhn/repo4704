@@ -13,14 +13,14 @@
             <form wire:submit.prevent="filterJurnal">
                 <label for="periode">Pilih Periode:</label>
                 <input type="month" wire:model="periode" id="periode" class="border rounded px-2 py-1">
-                <button type="submit" class="ml-2 bg-green-500 text-black px-3 py-1 rounded">Filter</button>
+                <button type="submit" class="ml-2 bg-green-500 text-white px-3 py-1 rounded">Filter</button>
             </form>
 
             
                 <br><br>
                
-                <div class="col-sm-12" style="background-color:white;" align="center">
-                    <b>Toko Mukena</b><br>
+                <div class="col-sm-12" style="background-color:black;" align="center">
+                    <b>Ayam Geprek Meriam</b><br>
                     <b>Jurnal Umum</b><br>
                     <b>Periode {{ $periode ? \Carbon\Carbon::createFromFormat('Y-m', $periode)->translatedFormat('F Y') : now()->translatedFormat('F Y') }} </b><br>
                 </div>
