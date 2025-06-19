@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('pelanggan', function (Blueprint $table) {
             $table->string('id_pelanggan')->primary();
             $table->string('nama_pelanggan');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->string('alamat_pelanggan');
             $table->string('no_telpon_pelanggan');
             $table->timestamps();

@@ -19,7 +19,7 @@
                 <th>No Faktur</th>
                 <th>Nama Pelanggan</th>
                 <th>Status</th>
-                <th>Tagihan</th>
+                <th>Total</th>
                 <th>Tgl</th>
             </tr>
         </thead>
@@ -29,7 +29,7 @@
                 <td>{{ $p->no_faktur }}</td>
                 <td>{{ optional($p->pelanggan)->nama_pelanggan }}</td>
                 <td>{{ $p->status }}</td>
-                <td class="text-right">{{ rupiah($p->tagihan) }}</td>
+                <td class="text-right">{{ rupiah($p->total) }}</td>
                 <td>{{ $p->created_at }}</td>
             </tr>
             @endforeach

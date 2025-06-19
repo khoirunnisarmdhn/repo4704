@@ -42,14 +42,14 @@
 
         <div class="info">
             <strong>No Faktur:</strong> {{ $no_faktur }}<br>
-            <strong>Nama Pembeli:</strong> {{ $nama_pembeli }}<br>
+            <strong>Nama Pembeli:</strong> {{ $nama_pelanggan }}<br>
             <strong>Tanggal:</strong> {{ $tanggal }}
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th>Barang</th>
+                    <th>Produk</th>
                     <th>Qty</th>
                     <th>Harga</th>
                     <th>Subtotal</th>
@@ -58,10 +58,10 @@
             <tbody>
                 @foreach($items as $item)
                 <tr>
-                    <td>{{ $item->nama_barang }}</td>
-                    <td>{{ $item->total_barang }}</td>
+                    <td>{{ $item->nama_produk }}</td>
+                    <td>{{ $item->total_produk }}</td>
                     <td class="text-right">{{ rupiah($item->harga_jual, 0, ',', '.') }}</td>
-                    <td class="text-right">{{ rupiah($item->harga_jual * $item->total_barang, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ rupiah($item->harga_jual * $item->total_produk, 0, ',', '.') }}</td>
                 </tr>
                 @endforeach
                 <tr>
