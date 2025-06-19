@@ -128,6 +128,7 @@ class PenjualanResource extends Resource
                                     TextInput::make('jumlah')
                                         ->label('Jumlah')
                                         ->default(1)
+                                        ->numeric()
                                         ->reactive()
                                         ->live()
                                         ->required()
