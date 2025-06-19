@@ -15,59 +15,64 @@ class PengirimanEmailController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
 
-        // 1. Ambil penjualan yang sudah dibayar dan belum dikirim email
+        // 1. Ambil penjualan yang sudah bayar & belum dikirim email
         $data = DB::table('penjualan')
-            ->join('pelanggan', 'penjualan.pelanggan_id', '=', 'pelanggan.id')
-            ->join('users', 'pelanggan.user_id', '=', 'users.id')
-            ->where('penjualan.status', 'bayar')
+            ->leftJoin('pelanggan', 'penjualan.id_pelanggan', '=', 'pelanggan.id_pelanggan')
+            // ->leftJoin('users', 'pelanggan.user_id', '=', 'users.id') // DIHAPUS, email langsung dari pelanggan
+            ->where('status', 'bayar')
             ->whereNotIn('penjualan.id', function ($query) {
                 $query->select('penjualan_id')->from('pengirimanemail');
             })
-            ->select('penjualan.id', 'penjualan.no_faktur', 'users.email', 'penjualan.pembeli_id')
+            ->select('penjualan.id', 'penjualan.no_faktur', 'pelanggan.email', 'penjualan.id_pelanggan') // PAKAI email dari pelanggan
             ->get();
+
+        if ($data->isEmpty()) {
+            \Log::info('Tidak ada data untuk dikirim.');
+            return 'Tidak ada email dikirim.';
+        }
 
         foreach ($data as $p) {
             $id = $p->id;
             $email = $p->email;
 
-            // 2. Ambil detail penjualan
-            $detail_penjualan = DB::table('detail_penjualan')
-                ->join('detail_penjualan', 'detail_penjualan.id', '=', 'detail_penjualan.penjualan_id')
-                ->join('pembayaran', 'penjualan.id', '=', 'pembayaran.penjualan_id')
-                ->join('produk', 'detail_penjualan.produk_id', '=', 'produk.id')
-                ->join('pelanggan', 'penjualan.pelanggan_id', '=', 'pelanggan.id')
+            // Jika email kosong/null, skip kirim email
+            if (empty($email)) {
+                \Log::info("Penjualan ID $id: Email kosong, skip kirim email.");
+                continue;
+            }
+
+            $produk = DB::table('penjualan')
+                ->join('detail_penjualan', 'penjualan.id', '=', 'detail_penjualan.id_penjualan')
+                ->join('pembayaran', 'penjualan.id', '=', 'pembayaran.id_penjualan')
+                ->join('produks', 'detail_penjualan.kode_produk', '=', 'produks.kode_produk')
+                ->join('pelanggan', 'penjualan.id_pelanggan', '=', 'pelanggan.id_pelanggan')
                 ->select(
                     'penjualan.id',
                     'penjualan.no_faktur',
                     'pelanggan.nama_pelanggan',
-                    'detail_penjualan.produk_id',
-                    'produk.nama_produk',
+                    'detail_penjualan.kode_produk',
+                    'produks.nama_produk',
                     'detail_penjualan.harga_satuan',
-                    'produk.foto',
-                    DB::raw('SUM(detail_penjualan.jml) as total'),
-                    DB::raw('SUM(detail_penjualan.harga_satuan * detail_penjualan.jml) as total_belanja')
+                    DB::raw('SUM(detail_penjualan.jumlah) as total_produk'),
+                    DB::raw('SUM(detail_penjualan.harga_satuan * detail_penjualan.jumlah) as total_belanja')
                 )
                 ->where('penjualan.id', $id)
                 ->groupBy(
                     'penjualan.id',
                     'penjualan.no_faktur',
                     'pelanggan.nama_pelanggan',
-                    'detail_penjualan.produk_id',
-                    'produk.nama_produk',
-                    'detail_penjualan.harga_satuan',
-                    'produk.foto'
+                    'detail_penjualan.kode_produk',
+                    'produks.nama_produk',
+                    'detail_penjualan.harga_satuan'
                 )
                 ->get();
 
-            // Lewati jika tidak ada barang
-            if ($barang->isEmpty()) {
+            if ($produk->isEmpty()) {
                 continue;
             }
 
-            // Ambil total belanja dari salah satu baris (semua sama karena pakai SUM SQL)
             $totalBelanja = $produk[0]->total_belanja ?? 0;
 
-            // Buat PDF invoice
             $pdf = Pdf::loadView('pdf.invoice', [
                 'no_faktur' => $p->no_faktur,
                 'nama_pembeli' => $produk[0]->nama_pelanggan ?? '-',
@@ -76,26 +81,28 @@ class PengirimanEmailController extends Controller
                 'tanggal' => now()->format('d-M-Y'),
             ]);
 
-            // Persiapkan data untuk email
-            $dataAtributPelanggan = [
+            $dataEmail = [
                 'customer_name' => $produk[0]->nama_pelanggan,
-                'invoice_number' => $p->no_faktur
+                'invoice_number' => $p->no_faktur,
             ];
 
-            // Kirim email dengan lampiran invoice
-            Mail::to($email)->send(new InvoiceMail($dataAtributPelanggan, $pdf->output()));
+            try {
+                Mail::to($email)->send(new InvoiceMail($dataEmail, $pdf->output()));
 
-            // Tunggu 5 detik sebelum lanjut
-            sleep(5);
+                Pengirimanemail::create([
+                    'penjualan_id' => $id,
+                    'status' => 'sudah terkirim',
+                    'tgl_pengiriman_pesan' => now(),
+                ]);
+            } catch (\Exception $e) {
+                \Log::error("Gagal kirim ke $email: " . $e->getMessage());
+                continue;
+            }
 
-            // Catat bahwa email sudah terkirim
-            Pengirimanemail::create([
-                'penjualan_id' => $id,
-                'status' => 'sudah terkirim',
-                'tgl_pengiriman_pesan' => now(),
-            ]);
+            sleep(5); // jeda kirim email
         }
 
         return view('autorefresh_email');
+        // return 'Pengiriman email selesai.';
     }
 }

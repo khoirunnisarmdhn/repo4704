@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,10 @@ Route::get('/cekmidtrans', [CobaMidtransController::class, 'cekmidtrans']);
 
 // proses pengiriman email
 use App\Http\Controllers\PengirimanEmailController;
-Route::get('/proses_kirim_email_pembayaran', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
+Route::get('/kirim-invoice', [PengirimanEmailController::class, 'proses_kirim_email_pembayaran']);
+
+// routes/web.php atau routes/api.php
+Route::post('/penjualan', [\App\Http\Controllers\PenjualanController::class, 'store']);
+
+
+

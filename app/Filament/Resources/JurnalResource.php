@@ -50,18 +50,28 @@ class JurnalResource extends Resource
                         ->required()
                         ->default(now()),
 
-                    // Nama akun dari COA
+                    // Dropdown Nama Akun
                     Select::make('nama_akun')
                         ->label('Nama Akun')
                         ->options(Coa::all()->pluck('nama_akun', 'nama_akun'))
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->reactive() // <- Penting agar event-nya jalan
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            $coa = Coa::where('nama_akun', $state)->first();
+                            if ($coa) {
+                                $set('kode_akun', $coa->kode_akun);
+                            } else {
+                                $set('kode_akun', null);
+                            }
+                        }),
 
-                    // Kode akun dari COA
+                    // Dropdown Kode Akun yang diisi otomatis
                     Select::make('kode_akun')
                         ->label('Kode Akun')
                         ->options(Coa::all()->pluck('kode_akun', 'kode_akun'))
-                        ->searchable()
+                        ->disabled() // Supaya user tidak ubah manual
+                        ->dehydrated(true)
                         ->required(),
 
                     Textarea::make('deskripsi')->label('Deskripsi'),
@@ -69,6 +79,7 @@ class JurnalResource extends Resource
                 ->columns(1)
                 ->collapsed()
                 ->collapsible(),
+
 
             Section::make('Detail Jurnal')
                 ->schema([

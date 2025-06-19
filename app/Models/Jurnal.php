@@ -18,7 +18,7 @@ class Jurnal extends Model
     {
         return $this->hasMany(JurnalDetail::class);
     }
-
+    
     // Optional: cek apakah seimbang
     public function isBalanced()
     {
